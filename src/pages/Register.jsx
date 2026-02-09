@@ -27,19 +27,18 @@ export default function Register() {
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = async (data) => {
-    try {
-      await registerUser({
+    const onSubmit = async (data) => {
+    const success = await register({
         username: data.username,
         email: data.email,
         password: data.password,
         password2: data.password2,
-      });
-      navigate('/dashboard');
-    } catch (err) {
-      // error already shown via Axios interceptor
+    });
+
+    if (success) {
+        navigate('/dashboard');
     }
-  };
+    };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
