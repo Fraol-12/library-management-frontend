@@ -1,44 +1,59 @@
+// src/contexts/AuthContext.jsx
 import { createContext, useContext, useState } from 'react';
+import api from '../api/client'; // ← your Axios instance
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  // ────────────────────────────────────────────────
-  // Global state – single source of truth for auth
-  // ────────────────────────────────────────────────
-  const [user, setUser] = useState(null);               // { username, email, is_staff, ... }
-  const [token, setToken] = useState(
-    localStorage.getItem('access_token') || null
-  );
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('access_token') || null);
 
-  // Derived state – convenient for components
   const isAuthenticated = !!token;
 
-  // ────────────────────────────────────────────────
-  // Auth methods (placeholders – real logic tomorrow)
-  // ────────────────────────────────────────────────
-  const login = async (credentials) => {
-    console.log('Login called with:', credentials);
-    // Tomorrow: POST /api/token/ → save token + user
-    // For now: simulate success
-    // localStorage.setItem('access_token', 'fake-token');
-    // setToken('fake-token');
-    // setUser({ username: 'demo' });
+  const login = async ({ username, password }) => {
+    try {
+      const response = await api.post('/token/', { username, password });
+      const { access } = response.data;
+
+      localStorage.setItem('access_token', access);
+      setToken(access);
+
+      // Optional: fetch user info if your backend returns it
+      // For now we can just set a basic user object
+      setUser({ username });
+
+      return true; // success
+    } catch (err) {
+      // Errors are already toasted by interceptor
+      return false;
+    }
   };
 
-  const register = async (data) => {
-    console.log('Register called with:', data);
-    // Tomorrow: POST /api/register/ → auto-login
+  const register = async ({ username, email, password, password2 }) => {
+    try {
+      await api.post('/register/', {
+        username,
+        email,
+        password,
+        password2,
+      });
+
+      // Auto-login after register (common UX)
+      await login({ username, password });
+
+      return true;
+    } catch (err) {
+      // Errors toasted by interceptor
+      return false;
+    }
   };
 
   const logout = () => {
     localStorage.removeItem('access_token');
     setToken(null);
     setUser(null);
-    console.log('User logged out');
   };
 
-  // Value object passed to all consumers
   const value = {
     user,
     token,
@@ -48,14 +63,9 @@ export function AuthProvider({ children }) {
     logout,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Custom hook – must be used inside <AuthProvider>
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === null) {
