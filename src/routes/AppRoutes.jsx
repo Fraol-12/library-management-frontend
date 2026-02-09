@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
+import Dashboard from '../pages/Dashboard';
 
 
 export default function AppRoutes() {
@@ -12,7 +13,7 @@ export default function AppRoutes() {
 
       {/* protected routes */}
       <Route element={<PrivateRoute />}>
-        <Route path="/dashboard" element={<div className="p-10 text-center text-2xl">Dashboard (protected) – placeholder</div>} />
+        <Route path="/dashboard" element={<Dashboard/>} />
       </Route>
 
       <Route path="*" element={<div className="p-10 text-center text-4xl text-red-600">404 – Page not found</div>} />

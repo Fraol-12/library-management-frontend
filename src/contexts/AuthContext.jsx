@@ -1,45 +1,65 @@
-// src/contexts/AuthContext.jsx
 import { createContext, useContext, useState } from 'react';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('access_token') || null);
+  // ────────────────────────────────────────────────
+  // Global state – single source of truth for auth
+  // ────────────────────────────────────────────────
+  const [user, setUser] = useState(null);               // { username, email, is_staff, ... }
+  const [token, setToken] = useState(
+    localStorage.getItem('access_token') || null
+  );
 
-  // Placeholder functions — we'll implement tomorrow
+  // Derived state – convenient for components
+  const isAuthenticated = !!token;
+
+  // ────────────────────────────────────────────────
+  // Auth methods (placeholders – real logic tomorrow)
+  // ────────────────────────────────────────────────
   const login = async (credentials) => {
-    // TODO: call /api/token/, save token, setUser
-    console.log('Login placeholder:', credentials);
+    console.log('Login called with:', credentials);
+    // Tomorrow: POST /api/token/ → save token + user
+    // For now: simulate success
+    // localStorage.setItem('access_token', 'fake-token');
+    // setToken('fake-token');
+    // setUser({ username: 'demo' });
   };
 
   const register = async (data) => {
-    // TODO: call /api/register/, auto-login
-    console.log('Register placeholder:', data);
+    console.log('Register called with:', data);
+    // Tomorrow: POST /api/register/ → auto-login
   };
 
   const logout = () => {
     localStorage.removeItem('access_token');
     setToken(null);
     setUser(null);
+    console.log('User logged out');
   };
 
+  // Value object passed to all consumers
   const value = {
     user,
     token,
-    isAuthenticated: !!token,
+    isAuthenticated,
     login,
     register,
     logout,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
+// Custom hook – must be used inside <AuthProvider>
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+  if (context === null) {
+    throw new Error('useAuth must be used inside AuthProvider');
   }
   return context;
 }
