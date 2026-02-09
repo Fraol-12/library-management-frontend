@@ -22,14 +22,16 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data) => {
-    try {
-      await login(data);
-      navigate('/dashboard');
-    } catch (err) {
-      // error already handled in Axios interceptor
+    const onSubmit = async (data) => {
+    const success = await login({
+        username: data.username,
+        password: data.password,
+    });
+
+    if (success) {
+        navigate('/dashboard');
     }
-  };
+    };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
