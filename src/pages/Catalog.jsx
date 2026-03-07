@@ -21,55 +21,16 @@ export default function Catalog() {
       if (params.toString()) url += '?' + params.toString();
 
       const response = await api.get(url);
-      let data = response.data.results || response.data;
-
-      // TEMPORARY: If no books from backend, use sample data for design testing
-      if (data.length === 0) {
-        data = [
-          {
-            id: 1,
-            title: "Clean Code",
-            author: "Robert C. Martin",
-            is_available: true,
-            cover_image: "https://picsum.photos/id/1015/300/400"
-          },
-          {
-            id: 2,
-            title: "The Design of Everyday Things",
-            author: "Don Norman",
-            is_available: true,
-            cover_image: "https://picsum.photos/id/201/300/400"
-          },
-          {
-            id: 3,
-            title: "Dune",
-            author: "Frank Herbert",
-            is_available: false,
-            cover_image: "https://picsum.photos/id/301/300/400"
-          },
-          {
-            id: 4,
-            title: "Thinking, Fast and Slow",
-            author: "Daniel Kahneman",
-            is_available: true,
-            cover_image: "https://picsum.photos/id/401/300/400"
-          },
-        ];
-      }
-
-      setBooks(data);
+      setBooks(response.data.results || response.data);
     } catch (err) {
       console.error('Failed to fetch books:', err);
-      // Fallback to sample data even on error
-      setBooks([
-        { id: 1, title: "Clean Code", author: "Robert C. Martin", is_available: true },
-        { id: 2, title: "The Design of Everyday Things", author: "Don Norman", is_available: true },
-      ]);
+      setBooks([]); // clear on error
     } finally {
       setLoading(false);
     }
   };
 
+  // Re-fetch when search or filter changes
   useEffect(() => {
     fetchBooks();
   }, [searchTerm, filter]);
@@ -103,6 +64,7 @@ export default function Catalog() {
           </div>
         </div>
 
+        {/* Loading Skeletons */}
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {[...Array(8)].map((_, i) => (
@@ -111,11 +73,18 @@ export default function Catalog() {
           </div>
         )}
 
+        {/* Real Books Grid */}
         {!loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {books.map((book) => (
               <BookCard key={book.id} book={book} />
             ))}
+          </div>
+        )}
+
+        {!loading && books.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-2xl text-gray-400">No books found.</p>
           </div>
         )}
       </div>
