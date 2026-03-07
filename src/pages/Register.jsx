@@ -27,18 +27,18 @@ export default function Register() {
     resolver: zodResolver(registerSchema),
   });
 
-    const onSubmit = async (data) => {
-    const success = await register({
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        password2: data.password2,
+  const onSubmit = async (data) => {
+    const success = await registerUser({
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      password2: data.password2,
     });
 
     if (success) {
-        navigate('/dashboard');
+      navigate('/dashboard');
     }
-    };
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
