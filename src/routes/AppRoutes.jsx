@@ -5,6 +5,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Catalog from '../pages/Catalog';
 import BookDetail from '../pages/BookDetail';
+import StaffDashboard from '../pages/StaffDashboard';
 
 export default function AppRoutes() {
   return (
@@ -14,6 +15,7 @@ export default function AppRoutes() {
       <Route path="/register" element={<Register/>} />
       <Route path="/catalog" element={ < Catalog /> } />
       <Route path="/books/:id" element={ <BookDetail />}  />
+      <Route path="/staff/dashboard" element={<StaffDashboard />} />
       
       {/* protected routes */}
       <Route element={<PrivateRoute />}>
