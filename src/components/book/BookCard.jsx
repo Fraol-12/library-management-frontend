@@ -1,8 +1,36 @@
 // src/components/book/BookCard.jsx
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../api/client';
+import toast from 'react-hot-toast';
 
 export default function BookCard({ book }) {
-  const isAvailable = book.is_available !== false; // handle both true/false and undefined
+  const [isBorrowing, setIsBorrowing] = useState(false);
+  const navigate = useNavigate();
+
+  const isAvailable = book.is_available !== false;
+
+  const handleBorrow = async () => {
+    if (!isAvailable) return;
+
+    setIsBorrowing(true);
+
+    try {
+      await api.post('/loans/', {
+        book: book.id,
+        due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
+      });
+
+      toast.success('Book borrowed successfully!');
+      
+      // Refresh the catalog to update availability
+      window.location.reload();
+    } catch (err) {
+      // Error toast already handled by Axios interceptor
+    } finally {
+      setIsBorrowing(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 group">
@@ -40,18 +68,20 @@ export default function BookCard({ book }) {
         </p>
 
         <div className="flex items-center justify-between">
-          <Link 
-            to={`/books/${book.id}`}
+          <button
+            onClick={() => navigate(`/books/${book.id}`)}
             className="text-indigo-600 hover:text-indigo-700 text-sm font-medium flex items-center gap-1"
           >
             View Details →
-          </Link>
+          </button>
 
           {isAvailable && (
             <button 
-              className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-6 py-2 rounded-xl transition-all active:scale-95"
+              onClick={handleBorrow}
+              disabled={isBorrowing}
+              className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white text-sm font-medium px-6 py-2 rounded-xl transition-all active:scale-95"
             >
-              Borrow
+              {isBorrowing ? 'Borrowing...' : 'Borrow'}
             </button>
           )}
         </div>
