@@ -13,7 +13,7 @@ export default function AppRoutes() {
       <Route path="/login" element={<Login/>} />
       <Route path="/register" element={<Register/>} />
       <Route path="/catalog" element={ < Catalog /> } />
-      <Route path="/books/id" element={ <BookDetail />}  />
+      <Route path="/books/:id" element={ <BookDetail />}  />
       
       {/* protected routes */}
       <Route element={<PrivateRoute />}>
