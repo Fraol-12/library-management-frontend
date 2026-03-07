@@ -7,9 +7,8 @@ export default function Catalog() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState('all'); // 'all' or 'available'
+  const [filter, setFilter] = useState('all');
 
-  // Fetch books from backend
   const fetchBooks = async () => {
     setLoading(true);
     try {
@@ -22,40 +21,81 @@ export default function Catalog() {
       if (params.toString()) url += '?' + params.toString();
 
       const response = await api.get(url);
-      setBooks(response.data.results || response.data); // handle pagination later
+      let data = response.data.results || response.data;
+
+      // TEMPORARY: If no books from backend, use sample data for design testing
+      if (data.length === 0) {
+        data = [
+          {
+            id: 1,
+            title: "Clean Code",
+            author: "Robert C. Martin",
+            is_available: true,
+            cover_image: "https://picsum.photos/id/1015/300/400"
+          },
+          {
+            id: 2,
+            title: "The Design of Everyday Things",
+            author: "Don Norman",
+            is_available: true,
+            cover_image: "https://picsum.photos/id/201/300/400"
+          },
+          {
+            id: 3,
+            title: "Dune",
+            author: "Frank Herbert",
+            is_available: false,
+            cover_image: "https://picsum.photos/id/301/300/400"
+          },
+          {
+            id: 4,
+            title: "Thinking, Fast and Slow",
+            author: "Daniel Kahneman",
+            is_available: true,
+            cover_image: "https://picsum.photos/id/401/300/400"
+          },
+        ];
+      }
+
+      setBooks(data);
     } catch (err) {
       console.error('Failed to fetch books:', err);
+      // Fallback to sample data even on error
+      setBooks([
+        { id: 1, title: "Clean Code", author: "Robert C. Martin", is_available: true },
+        { id: 2, title: "The Design of Everyday Things", author: "Don Norman", is_available: true },
+      ]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch when search or filter changes
   useEffect(() => {
     fetchBooks();
   }, [searchTerm, filter]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-10">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Library Catalog</h1>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900">Library Catalog</h1>
+            <p className="text-gray-600 mt-2">Browse our collection of curated titles</p>
+          </div>
 
-          {/* Search + Filter */}
-          <div className="flex gap-4">
+          <div className="flex gap-4 w-full md:w-auto">
             <input
               type="text"
               placeholder="Search by title or author..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-80 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+              className="flex-1 md:w-80 px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-indigo-500 text-sm"
             />
 
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+              className="px-5 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-indigo-500 text-sm bg-white"
             >
               <option value="all">All Books</option>
               <option value="available">Available Now</option>
@@ -63,28 +103,20 @@ export default function Catalog() {
           </div>
         </div>
 
-        {/* Loading State */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl shadow-sm h-96 animate-pulse" />
+              <div key={i} className="bg-white rounded-2xl h-96 animate-pulse" />
             ))}
           </div>
         )}
 
-        {/* Book Grid */}
         {!loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {books.map((book) => (
               <BookCard key={book.id} book={book} />
             ))}
           </div>
-        )}
-
-        {!loading && books.length === 0 && (
-          <p className="text-center text-gray-500 text-xl py-20">
-            No books found.
-          </p>
         )}
       </div>
     </div>
