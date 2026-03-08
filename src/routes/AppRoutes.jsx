@@ -6,11 +6,12 @@ import Register from '../pages/Register';
 import Catalog from '../pages/Catalog';
 import BookDetail from '../pages/BookDetail';
 import StaffDashboard from '../pages/StaffDashboard';
+import Landing from '../pages/Landing';
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<div className="p-10 text-center text-3xl font-bold text-gray-800">Home – Coming soon</div>} />
+      <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login/>} />
       <Route path="/register" element={<Register/>} />
       <Route path="/catalog" element={ < Catalog /> } />
