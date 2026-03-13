@@ -1,15 +1,17 @@
 // src/App.jsx
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Header from './components/layout/Header';
 import AppRoutes from './routes/AppRoutes';
 
-function App() {
+export default function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <div className="min-h-screen bg-gray-50">
-        <AppRoutes />
+        <Header />
+        <main className="pt-16"> {/* offset for fixed header */}
+          <AppRoutes />
+        </main>
       </div>
-    </BrowserRouter>
+    </Router>
   );
 }
-
-export default App;

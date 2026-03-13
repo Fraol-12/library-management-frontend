@@ -7,6 +7,8 @@ import Catalog from '../pages/Catalog';
 import BookDetail from '../pages/BookDetail';
 import StaffDashboard from '../pages/StaffDashboard';
 import Landing from '../pages/Landing';
+import StaffRoute from './StaffRoute';
+
 
 export default function AppRoutes() {
   return (
@@ -17,10 +19,15 @@ export default function AppRoutes() {
       <Route path="/catalog" element={ < Catalog /> } />
       <Route path="/books/:id" element={ <BookDetail />}  />
       <Route path="/staff/dashboard" element={<StaffDashboard />} />
+
+      {/* Member protected */}
+      <Route element={<PrivateRoute />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Route>
       
       {/* protected routes */}
-      <Route element={<PrivateRoute />}>
-        <Route path="/dashboard" element={<Dashboard/>} />
+      <Route element={<StaffRoute />}>
+        <Route path="/staff/dashboard" element={<StaffDashboard />} />
       </Route>
 
       <Route path="*" element={<div className="p-10 text-center text-4xl text-red-600">404 – Page not found</div>} />
