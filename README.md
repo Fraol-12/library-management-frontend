@@ -1,59 +1,63 @@
-# LMS Frontend – Modern React Library Interface
+# LMS Frontend – React Library Management Interface
 
-Responsive single-page application consuming a real Django REST API for library management.
+Modern single-page application consuming a production-grade Django REST API for library operations.
 
 **Live Demo**  
-https://<your-vercel-domain>.vercel.app
+https://library-management-frontend-sepia.vercel.app
 
-**Backend API** (built separately)  
-https://library-management-api-ym28.onrender.com/
+**Backend API** (separate repository)  
+https://library-management-api-ym28.onrender.com/api
 
-**Backend Repo**  
+**Backend Repository**  
 https://github.com/Fraol-12/library-management-api
 
 
-## Tech Stack & Architecture
 
-- React 18 + Vite (fast dev & build)
-- Tailwind CSS v3 (utility-first, responsive-first design)
-- Axios (centralized API client with interceptors)
-- React Router v6 (protected routes, dynamic params)
-- React Hook Form + Zod (type-safe forms & validation)
-- React Hot Toast (non-blocking notifications)
-- Context API (lightweight global auth state)
-- Vercel (zero-config deployment)
+## Tech Stack
 
-### Key Architectural Decisions
+- **Framework** — React 18 + Vite  
+- **Styling** — Tailwind CSS v3 (utility-first, mobile-first)  
+- **API Client** — Axios with request/response interceptors  
+- **Routing** — React Router v6 (protected routes, dynamic params)  
+- **Forms & Validation** — react-hook-form + Zod  
+- **Notifications** — react-hot-toast  
+- **State Management** — React Context API (lightweight auth store)  
+- **Deployment** — Vercel (zero-config CI/CD)
 
-- **Centralized API layer** (`src/api/client.js`)  
-  Single Axios instance → request/response interceptors for JWT auto-attachment and global error handling (401 → redirect to login, 403 → permission toast, network errors → user-friendly message)
+## Architectural Decisions & Rationale
+
+- **Single API Client** (`src/api/client.js`)  
+  Centralized Axios instance with JWT bearer token injection and global error handling (401 → redirect to login, 403 → permission toast, network failures → user-friendly message). Eliminates duplicated auth/error logic.
 
 - **Auth as Context** (`AuthContext.jsx` + `useAuth` hook)  
-  Avoids prop drilling, single source of truth for token/user/isAuthenticated
+  Single source of truth for authentication state. Avoids prop drilling while keeping bundle size minimal (no Redux/Zustand needed for this scope).
 
-- **Protected routes** (`PrivateRoute.jsx`)  
-  Redirects unauthenticated users to /login, protects /dashboard
+- **Protected Routes Pattern** (`PrivateRoute.jsx`)  
+  Declarative authorization: unauthenticated users are redirected to `/login`. Role checks (staff vs member) added when needed.
 
-- **Form handling**  
-  react-hook-form for minimal re-renders + Zod for schema validation → consistent validation UX
+- **Form Handling**  
+  `react-hook-form` for minimal re-renders + `zod` for schema-based validation → consistent validation UX, type safety, and easy extension.
 
-- **Real-world UX patterns**  
-  Loading skeletons, inline errors, disabled states, optimistic updates (borrow/return), toast feedback
+- **Real-world UX Patterns**  
+  - Loading skeletons instead of blank states  
+  - Inline validation + disabled actions  
+  - Optimistic UI on borrow/return (future rollback)  
+  - Non-blocking toasts for every async action
 
-## Features Implemented
+## Core Features
 
-- Public landing page with hero & feature cards
-- Public catalog with search, filter (available/all), loading skeletons
-- Book detail view (cover, metadata, synopsis, borrow button)
-- JWT auth: register → auto-login, login, logout
-- Protected member dashboard with active loans & return functionality
-- Responsive design (mobile-first Tailwind)
+- Public landing page with hero & value proposition cards
+- Catalog with server-side search & availability filtering
+- Book detail view (cover, metadata, synopsis, borrow action)
+- JWT authentication flow: register → auto-login, login, logout
+- Protected member dashboard showing active loans + return functionality
+- Responsive design (mobile-first Tailwind breakpoints)
 
-## How to Run Locally
+## Local Development
 
 ```bash
 # Install dependencies
 npm install
 
-# Start dev server
+# Start development server
 npm run dev
