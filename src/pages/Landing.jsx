@@ -17,7 +17,7 @@ export default function Landing() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
-            <span className="text-xl font-bold tracking-tight">Libre.</span>
+            <span className="text-xl font-bold tracking-tight">ShelfCore</span>
           </div>
 
           {/* Navigation Links – Conditional */}
@@ -42,15 +42,7 @@ export default function Landing() {
                   </Link>
                 )}
 
-                <button 
-                  onClick={() => {
-                    localStorage.removeItem('access_token');
-                    window.location.href = '/login';
-                  }}
-                  className="text-red-600 hover:text-red-700 transition-colors"
-                >
-                  Logout
-                </button>
+
               </>
             ) : (
               <>
@@ -79,7 +71,7 @@ export default function Landing() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
               </span>
-              New
+              LMS
             </div>
             <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight text-slate-950 mb-8 leading-[1.1]">
               Smart Library <span className="text-indigo-600">Management</span>

@@ -19,9 +19,9 @@ export default function Header() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-            L
+            
           </div>
-          <span className="text-xl font-bold tracking-tight text-gray-900">Libre.</span>
+          <span className="text-xl font-bold tracking-tight text-gray-900">ShelfCore</span>
         </Link>
 
         {/* Navigation */}
@@ -52,13 +52,6 @@ export default function Header() {
                   Staff Panel
                 </Link>
               )}
-
-              <button
-                onClick={handleLogout}
-                className="text-red-600 hover:text-red-700 font-medium transition-colors"
-              >
-                Logout
-              </button>
 
               {/* User avatar / name (optional polish) */}
               <span className="text-gray-600">
